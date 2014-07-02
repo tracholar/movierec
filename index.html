@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>电影推荐系统展示页面</title>
+		<meta charset="utf-8">
+		<style type="text/css">
+			
+		</style>
+	</head>
+	<body>
+		<h1>电影推荐系统展示页面</h1>
+		<p>
+			推荐系统API：   /rec/用户ID  <br/>
+			返回（json）：movie:{movieID:rank} <br/>
+						  info:{movieID:info} <br/>
+		</p>
+		<div>
+			<label>请输入用户ID<input name="uid" type="text" id="uid"></label>
+			<button id="submit" type="button">推荐</button>
+		</div>
+		<div id="result-container">
+		
+		</div>
+		
+		<script type="text/javascript" src="/res/jquery-1.11.1.min.js"></script>
+		<script type="text/javascript">
+			var movieType = ["Action", "Adventure", "Animation", "Children's", "Comedy", "Crime", "Documentary", "Drama", "Fantasy", "Film-Noir", "orror", "Musical", "Mystery", "Romance", "Sci-Fi", "Thriller", "War", "Western"];
+			$('#submit').click(function(){
+				var uid = $('#uid').val();
+				$.getJSON('/rec/' + uid, function(data){
+					console.log(data);
+					$('#result-container').html('');
+					
+					var sortable = [];
+					for(var i in data.movie){
+						sortable.push([i,data.movie[i]]);
+					}
+					sortable.sort(function(a,b){ return a[1]-b[1]; });
+					
+					$('<p>').text('为您推荐如下电影').appendTo('#result-container');
+					
+					var table = $('<table>').append('<tbody>').appendTo('#result-container');
+					for(var i in sortable){
+						var info = data.info[sortable[i][0]];
+						var tr = $('<tr>').addClass('movie-info');
+						var id = $('<td>').text(info[0]);
+						var name = $('<td>').append(
+								$('<a>').attr('target','_blank')
+								.attr('href',info[4]).text(info[1])
+								);
+								
+						var time = $('<td>').text(info[2]);
+						var type = [];
+						for(var j=0;j<movieType.length;j++){
+							if(info[5+j]==1){
+								type.push(movieType[j]);
+							}
+						}
+						type = $('<td>').text(type.join(','));
+						tr.append(id).append(name).append(type)
+								.append(time).appendTo(table);
+					}
+					
+				});
+			});
+		</script>
+	</body>
+</html>
