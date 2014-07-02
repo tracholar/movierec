@@ -82,6 +82,8 @@ def LatentFactorModel(user_items, F, N, alpha, lam):
 
 def Recommend(user,P,Q):
 	rank = dict()
+	if user not in P:
+		return rank
 	for i in Q:
 		if i not in rank:
 			rank[i] = Predict(user,i,P,Q)
@@ -104,6 +106,31 @@ def WritePQ(P,Q):
 		f.write('\n')
 	f.close()
 
+def ReadPQ():
+	P = dict()
+	for line in open('P.txt','r'):
+		line = line.replace('\n','')
+		line = line.split('\t')
+		# print line
+		u = line[0]
+		P[u] = np.zeros(4)
+		for i in range(1,5):
+			#print line[i]
+			#print float(line[i])
+			P[u][i-1] = float(line[i])
+	
+	Q = dict()
+	for line in open('Q.txt','r'):
+		line = line.replace('\n','')
+		line = line.split('\t')
+		u = line[0]
+		Q[u] = np.zeros(4)
+		for i in range(1,5):
+			Q[u][i-1] = float(line[i])
+	
+	return P,Q
+	
+	
 movieInfo = ReadMovieInfo('../data/u.item')
 data = ReadData('../data/u.data','\t')
 train, test = SplitData(data,4,0,0)
@@ -113,10 +140,11 @@ print 'read data finished!'
 R = GetRatings(train)
 print 'get ratings from train finished!'
 
-P,Q = LatentFactorModel(R, 4, 100, 0.03, 0.01)
-WritePQ(P,Q)
+# P,Q = LatentFactorModel(R, 4, 100, 0.03, 0.01)
+# WritePQ(P,Q)
+P,Q = ReadPQ()
 print 'P,Q caculated!'
 
-rec = sorted(Recommend(1,P,Q).items(), key=itemgetter(1), reverse=True)[0:20]
+rec = sorted(Recommend('1',P,Q).items(), key=itemgetter(1), reverse=True)
 for i,r in rec:
 	print i,r
