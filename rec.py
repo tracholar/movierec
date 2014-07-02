@@ -1,4 +1,4 @@
-# coding:gbk
+# coding:utf-8
 import random
 import math
 from operator import *
@@ -41,17 +41,17 @@ def Recommend(user, train, W, K=3):
 
 
 
-## 前端显示部分 
+## 鍓嶇鏄剧ず閮ㄥ垎 
 
 # request handler
 class MyRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 	def do_GET(self):
 		m = re.match(r'/rec/([^/]+)',self.path)
 		if m:
-			print self.path
+			# print self.path
 			uid = m.group(1)
 			res = Recommend(uid,train,W)
-			print res
+			# print res
 			data = dict()
 			data['movie'] = res
 			mInfo = dict()
