@@ -25,8 +25,12 @@
 		<script type="text/javascript" src="/res/jquery-1.11.1.min.js"></script>
 		<script type="text/javascript">
 			var movieType = ["Action", "Adventure", "Animation", "Children's", "Comedy", "Crime", "Documentary", "Drama", "Fantasy", "Film-Noir", "orror", "Musical", "Mystery", "Romance", "Sci-Fi", "Thriller", "War", "Western"];
+			$('#uid').keydown(function(e){
+				console.log(e)
+			});
 			$('#submit').click(function(){
 				var uid = $('#uid').val();
+				$('#submit').text('正在推荐...')
 				$.getJSON('/rec/' + uid, function(data){
 					console.log(data);
 					$('#result-container').html('');
@@ -57,10 +61,10 @@
 							}
 						}
 						type = $('<td>').text(type.join(','));
-						tr.append(id).append(name).append(time)
-								.append(type).appendTo(table);
+						tr.append(id).append(name).append(type)
+								.append(time).appendTo(table);
 					}
-					
+					$('#submit').text('推荐')
 				});
 			});
 		</script>
