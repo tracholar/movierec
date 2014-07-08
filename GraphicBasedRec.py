@@ -59,12 +59,28 @@ def PersonalRankMatrixInverse(G, alpha, root):
 	
 	
 	r = np.zeros(n)
+	r0 = np.zeros(n)
 	r[keysMap[root]] = 1
+	r0[keysMap[root]] = 1
 	
-	# print np.matrix(M )
-	M = np.matrix(1 - alpha*M)
+	r0 = np.matrix(r0).T
 	r = np.matrix(r).T
-	r = (1-alpha)*M.I*r
+	M = np.matrix(M)
+	# print M,r,M*r,M[0,:]
+	
+	PrintRank({keys[i]:r[i] for i in range(len(keys))})
+	for i in range(20):
+		r = (1-alpha)*r0 + alpha* M.T * r
+		#print r
+		PrintRank({keys[i]:r[i] for i in range(len(keys))})
+	
+	
+	for i in range(len(M)):
+		for j in range(len(M)):
+			print '%.5f\t' % M[i,j] ,
+		print 
+	
+	# r = (1-alpha)*M.I*r
 	
 	rank = dict()
 	for i in range(n):
@@ -73,6 +89,8 @@ def PersonalRankMatrixInverse(G, alpha, root):
 	return rank
 			
 rank1 = PersonalRankRandomWalk(G, 0.6, 'A')
+
+print 
 rank2 = PersonalRankMatrixInverse(G, 0.6, 'A')
 
 print 'Random Walk'
